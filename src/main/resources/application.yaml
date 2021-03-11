@@ -1,0 +1,31 @@
+# https://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+spring:
+  profiles:
+    active: pro
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/push?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: hello_world
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+    org.springframework.boot.autoconfigure: INFO
+    cn.flizi: DEBUG
+
+dingtalk:
+  access_token: xxx
