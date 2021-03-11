@@ -73,6 +73,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- curator 版本4.1.0 对应 zookeeper 版本 3.5.x -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>4.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -101,6 +108,7 @@
 
         </plugins>
     </build>
+
     <pluginRepositories>
         <pluginRepository>
             <id>aliyun-plugin</id>

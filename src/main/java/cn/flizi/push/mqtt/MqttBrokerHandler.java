@@ -1,7 +1,6 @@
 package cn.flizi.push.mqtt;
 
 import cn.flizi.push.service.DeviceService;
-import cn.flizi.push.util.DingTalkUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 
@@ -45,6 +45,7 @@ public final class MqttBrokerHandler extends SimpleChannelInboundHandler<MqttMes
                 ctx.writeAndFlush(pingResp);
                 break;
             case SUBSCRIBE:
+                checkAuth(ctx);
                 subscribe(ctx, msg);
                 break;
             default:
@@ -68,16 +69,28 @@ public final class MqttBrokerHandler extends SimpleChannelInboundHandler<MqttMes
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        DingTalkUtil.sendTextAsync("设备离线");
         super.channelInactive(ctx);
     }
 
     @SneakyThrows
     private void connect(ChannelHandlerContext ctx, MqttMessage msg) {
         MqttConnectPayload connectPayload = (MqttConnectPayload) msg.payload();
+
+        String clientId = connectPayload.clientIdentifier();
         String username = connectPayload.userName();
         String password = connectPayload.passwordInBytes() == null
                 ? null : new String(connectPayload.passwordInBytes(), CharsetUtil.UTF_8);
+
+        if (StringUtils.hasLength(clientId) || username.length() < 6) {
+            ctx.close();
+        }
+        if (StringUtils.hasLength(username) || username.length() < 6) {
+            ctx.close();
+        }
+
+        if (StringUtils.hasLength(password) || username.length() < 6) {
+            ctx.close();
+        }
 
         // 账号密码认证
         if (!deviceService.auth(username, password)) {
@@ -88,8 +101,8 @@ public final class MqttBrokerHandler extends SimpleChannelInboundHandler<MqttMes
 
         ctx.channel().attr(CONNECT_ATTRIBUTE_KEY).set(connectPayload);
 
-        DingTalkUtil.sendTextAsync(String.format("MQTT CONNECTED: %s", username));
         log.info("MQTT CONNECT {} {}", username, password);
+
         // 返回登录成功包
         MqttFixedHeader connackFixedHeader =
                 new MqttFixedHeader(MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
@@ -102,7 +115,6 @@ public final class MqttBrokerHandler extends SimpleChannelInboundHandler<MqttMes
     private void publish(ChannelHandlerContext ctx, MqttMessage msg) {
         MqttPublishMessage message = (MqttPublishMessage) msg;
         String body = message.payload().toString(StandardCharsets.UTF_8);
-//        DingTalkUtil.sendTextAsync(body);
     }
 
 
