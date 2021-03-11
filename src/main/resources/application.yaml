@@ -30,8 +30,8 @@ logging:
     cn.flizi: DEBUG
 
 mqtt:
-  port: 1883
-  idle: 45
+  port: 1883 # mqtt 端口
+  idle: 120 # mqtt 心跳超时时间
 
 dingtalk:
-  access_token: xxx
+  access_token: xxx # 钉钉推送token
