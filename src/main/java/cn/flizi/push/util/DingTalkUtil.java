@@ -47,8 +47,6 @@ public class DingTalkUtil implements ApplicationContextAware {
         dingTalkMsg.setAt(atBean);
         HttpHeaders httpHeader = new HttpHeaders();
         httpHeader.setContentType(MediaType.APPLICATION_JSON);
-
-        System.out.println(dingTalkMsg);
         try {
             httpsRestTemplate.postForObject(
                     String.format(DING_TOKEN_URL, access_token),

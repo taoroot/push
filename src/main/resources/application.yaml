@@ -25,7 +25,13 @@ logging:
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
     org.springframework.boot.autoconfigure: INFO
+    io.netty: INFO
+    io.netty.handler: DEBUG
     cn.flizi: DEBUG
+
+mqtt:
+  port: 1883
+  idle: 45
 
 dingtalk:
   access_token: xxx
